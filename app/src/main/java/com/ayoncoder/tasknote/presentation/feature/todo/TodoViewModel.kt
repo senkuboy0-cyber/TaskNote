@@ -5,19 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.ayoncoder.tasknote.domain.model.Todo
 import com.ayoncoder.tasknote.domain.model.Todo.Priority
 import com.ayoncoder.tasknote.domain.usecase.todo.*
-import com.ayoncoder.tasknote.domain.usecase.note.GetAllNotesUseCase
-import com.ayoncoder.tasknote.domain.usecase.note.GetAllNotesUseCase
-import com.ayoncoder.tasknote.domain.usecase.note.GetAllNotesUseCase
-import com.ayoncoder.tasknote.domain.usecase.note.GetAllNotesUseCase
-import com.ayoncoder.tasknote.domain.usecase.note.GetAllNotesUseCase
-import com.ayoncoder.tasknote.domain.usecase.note.GetAllNotesUseCase
-import com.ayoncoder.tasknote.domain.usecase.note.GetAllNotesUseCase
-import com.ayoncoder.tasknote.domain.usecase.note.GetAllNotesUseCase
-import com.ayoncoder.tasknote.domain.usecase.note.GetAllNotesUseCase
-import com.ayoncoder.tasknote.domain.usecase.note.GetAllNotesUseCase
-import com.ayoncoder.tasknote.domain.usecase.note.GetAllNotesUseCase
-import com.ayoncoder.tasknote.domain.usecase.note.GetAllNotesUseCase
-import com.ayoncoder.tasknote.domain.usecase.note.GetAllNotesUseCase
+import com.ayoncoder.tasknote.presentation.feature.todo.state.TodoUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -41,7 +29,7 @@ class TodoViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            getAllTodosUseCase().collect { todos ->
+            getCompletedTodosUseCase().collect { todos ->
                 _uiState.value = TodoUiState.Success(todos = todos)
             }
         }
@@ -82,7 +70,7 @@ class TodoViewModel @Inject constructor(
         _uiState.value = state.copy(showCompletedOnly = !state.showCompletedOnly)
         viewModelScope.launch {
             if (state.showCompletedOnly) {
-                getAllTodosUseCase().collect { _uiState.value = TodoUiState.Success(todos = it) }
+                getCompletedTodosUseCase().collect { _uiState.value = TodoUiState.Success(todos = it, showCompletedOnly = false) }
             } else {
                 getCompletedTodosUseCase().collect { _uiState.value = TodoUiState.Success(todos = it, showCompletedOnly = true) }
             }
