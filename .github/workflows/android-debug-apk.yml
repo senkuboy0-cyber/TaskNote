@@ -25,16 +25,24 @@ jobs:
           java-version: 17
           cache: gradle
 
-      - name: Download Gradle Wrapper JAR
+      - name: Install Gradle & Generate Wrapper JAR
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.11.1'
+
+      - name: Copy Wrapper JAR from temp project
         run: |
-          mkdir -p gradle/wrapper
-          curl -Lo gradle/wrapper/gradle-wrapper.jar \
-            https://raw.githubusercontent.com/gradle/gradle/v8.11.1/gradle/wrapper/gradle-wrapper.jar
+          mkdir -p /tmp/gradle-temp
+          cd /tmp/gradle-temp
+          gradle wrapper --gradle-version 8.11.1
+          mkdir -p $GITHUB_WORKSPACE/gradle/wrapper
+          cp gradle/wrapper/gradle-wrapper.jar $GITHUB_WORKSPACE/gradle/wrapper/
 
       - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
+        run: chmod +x $GITHUB_WORKSPACE/gradlew
 
       - name: Build Debug APK
+        working-directory: ${{ github.workspace }}
         run: ./gradlew assembleDebug --no-daemon --stacktrace
 
       - name: List APK files
