@@ -3,7 +3,6 @@ name: Android Debug APK Build
 on:
   push:
     branches: [ main, master ]
-    tags: [ 'v*' ]
   pull_request:
     branches: [ main, master ]
   workflow_dispatch:
@@ -17,31 +16,28 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@c28421964b27e627827abf8cf128e97dcfd97512 # v4.3.7
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
 
-      - name: Set up JDK 17
-        uses: actions/setup-java@a4a4eea2808f05f4d9fc20cfd393781bc09e5cbf # v4.7.0
+      - name: Setup JDK 17
+        uses: actions/setup-java@3a4f502f3185ef536b243aef5f6245fff5cf3ed3
         with:
           distribution: 'zulu'
           java-version: 17
           cache: gradle
 
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@d90dcf7e5fad86bc4b17c3e43b1b71c6fbcb814c # v4.2.5
-
-      - name: Grant execute permission to gradlew
-        run: chmod +x gradlew || true
+      - name: Setup Gradle Wrapper
+        uses: gradle/actions/setup-gradle@d90dcf7e5fad86bc4b17c3e43b1b71c6fbcb814c
+        with:
+          cache-disabled: false
 
       - name: Build Debug APK
         run: ./gradlew assembleDebug --no-daemon --stacktrace
 
       - name: List APK files
-        run: |
-          ls -la app/build/outputs/apk/debug/
-          find app/build/outputs -name "*.apk" -type f
+        run: find app/build/outputs -name "*.apk" -type f
 
       - name: Upload APK artifact
-        uses: actions/upload-artifact@26f96dfa697d6818b398faafafb8d973d830a5ec # v4
+        uses: actions/upload-artifact@354159b97204dc2fbcfb295fb54c93b7863c93e5
         with:
           name: debug-apk
           path: app/build/outputs/apk/debug/*.apk
