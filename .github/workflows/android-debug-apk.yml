@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
@@ -23,26 +23,20 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 17
-          cache: gradle
 
-      - name: Install Gradle & Generate Wrapper JAR
-        uses: gradle/actions/setup-gradle@v4
-        with:
-          gradle-version: '8.11.1'
-
-      - name: Copy Wrapper JAR from temp project
+      - name: Setup Gradle Wrapper
         run: |
-          mkdir -p /tmp/gradle-temp
-          cd /tmp/gradle-temp
-          gradle wrapper --gradle-version 8.11.1
-          mkdir -p $GITHUB_WORKSPACE/gradle/wrapper
-          cp gradle/wrapper/gradle-wrapper.jar $GITHUB_WORKSPACE/gradle/wrapper/
+          mkdir -p gradle/wrapper
 
-      - name: Grant execute permission for gradlew
-        run: chmod +x $GITHUB_WORKSPACE/gradlew
+          curl -L -o gradle/wrapper/gradle-wrapper.jar \
+            https://github.com/AntennaPod/AntennaPod/raw/master/gradle/wrapper/gradle-wrapper.jar
+
+          curl -L -o gradlew \
+            https://github.com/AntennaPod/AntennaPod/raw/master/gradlew
+
+          chmod +x gradlew
 
       - name: Build Debug APK
-        working-directory: ${{ github.workspace }}
         run: ./gradlew assembleDebug --no-daemon --stacktrace
 
       - name: List APK files
