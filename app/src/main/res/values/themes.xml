@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.TaskNote" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:colorPrimary">#FF6750A4</item>
+        <item name="android:colorPrimaryVariant">#FF4F378B</item>
+        <item name="android:colorOnPrimary">#FFFFFFFF</item>
+        <item name="android:colorSecondary">#FF625B71</item>
+        <item name="android:colorSecondaryVariant">#FFE8DEF8</item>
+    </style>
+</resources>
